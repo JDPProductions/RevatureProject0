@@ -8,6 +8,10 @@
  * Check if an account is overdrawn and change the status of the account accordingly.
  * Create a new transaction relating to the account.
  * Update the account based on all related transactions to show current balance
+ *
+ * Future iterations of this file would include accounting for cases in which the accountName
+ * and other like variables have invalid inputs/outputs that would crash the program. This file
+ * is assuming the variables passed in are valid and correct.
 */
 
 public class AccountTranformations {
