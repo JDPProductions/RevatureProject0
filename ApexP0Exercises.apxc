@@ -1,0 +1,231 @@
+//
+//	Apex Project 0 Exercises
+//	Date: 2/6/2019
+//	Author: JD Passanisi
+//	Various methods to test apex and SOQL knowledge. 
+//
+
+public class ApexP0Exercises {
+    /* Method for the use case:
+     * 1. Return the nth Fibonacci number
+    */
+    public static Integer nFibonacci( Integer n ){
+        //Initialize three integers to be used with additions to create a fibonacci loop
+        integer sum = 0, numPrevious = 0, numNext = 1;
+        for(integer i = 0; i < n; i++){
+            //Add together our two current numbers
+            sum = numPrevious + numNext;
+            
+            //Arrange values of two current numbers to reflect the next two numbers in the fibonacci sequence
+            numNext = numPrevious;
+            numPrevious = sum;
+        }
+        //Return the integer that represents the nth fibonacci number
+        return sum;
+    }
+    
+    /* Method for the use case:
+     * 2. Sort an array of integers.
+     * Bubble Sorting Algorithm
+    */
+    public static Integer[] sortArray( Integer[] intList ) {
+        //Loop through the entire array to essentially sort for worst case
+        //Worst Case: Array needs to sort n^2 times
+        for(Integer n1 = 0; n1 < intList.size(); n1++){
+            
+            //Each iteration, look through list elements
+            for(Integer n2 = n1 + 1; n2 < intList.size(); n2++){
+                
+                //Check if value is greater than the value next to it
+                //If so swap and continue
+                if(intList.get(n1)>intList.get(n2)){
+                    Integer temporary = intList.get(n1);
+                    intList.set(n1, intList.get(n2));
+                    intList.set(n2, temporary);
+                }
+            }
+        }
+        
+        //return sorted array
+        return intList;
+    }
+    
+    /* Method for the use case:
+     * 3. Return the factorial of n.
+    */
+    public static Integer nFactorial(Integer n) {
+        //Initial case is n is equal to 0
+        if(n == 0){
+            return 1;
+        }
+        
+        //Multiply n by every integer that came before it by looping through
+        //each number till you reach 0;
+        for(Integer endCond = n-1; endCond > 0; endCond--){
+            n = n * endCond;
+        }
+        
+        //return n factorial
+        return n;
+    }
+
+    /* Method for the use case:
+     * 4. Rotate left
+     * Given an array, array, and an integer, n, rotate the values in array left n times and return array
+    */
+    public static Integer[] rotateLeftNTimes( Integer[] array1, Integer n) {
+        //Create a new list of same size to hold new value positions
+        List<Integer> newList = new List<Integer>(array1.size());
+        
+        //Calculate how many spaces over the new values will go
+        Integer remainder = math.mod(n,array1.size());
+        
+        //cycle through each number in the original array and place it into its new index
+        for(integer rotateTimes = 0; rotateTimes < array1.size(); rotateTimes++){
+            if(remainder == array1.size()){
+                remainder = 0;
+            }
+            newList.set(rotateTimes, array1.get(remainder++));
+        }
+        
+        //return rotated list
+        return newList;
+    }
+
+    /* Method for the use case:
+     * 5. Balanced Brackets
+    */
+    public static Boolean bracketsAreBalanced( String s ) {
+        //remove all white space
+        s = s.replaceAll('\\s', '');
+        
+        //convert the string into a list and grab its size
+        List<String> charlist = s.split('');
+        Integer size = charlist.size();
+        
+        //check if there are an even number of characters
+        //necessary for balanced expression
+        if(math.mod(size,2) != 0){
+            return false;
+        }
+        
+        //cycle through the beginning and ending of the list
+        //returning false when not balancing brackets and
+        //removing the head and tail of the list when balanced
+        while(size > 0){
+            String char1 = charlist.get(0);
+            String char2 = charlist.get(size-1);
+            
+            //switch to check if characters are balanced - reversed logic
+            switch on char1 {
+                when '('{
+                    if(char2 != ')'){
+                        return false;
+                    }
+                }
+                when '['{
+                    if(char2 != ']'){
+                        return false;
+                    }                    
+                }
+                when '{'{
+                    if(char2 != '}'){
+                        return false;
+                    }                    
+                }
+                when else {
+                    return false;
+                }
+            }
+            
+            //if program got past switch statements, then the current head and tail
+            //are balanced - remove their nodes and update size
+            charlist.remove(size-1);
+            charlist.remove(0);
+            size = charlist.size(); 
+        }
+        
+        //if made it past while loop, then all expressions are balanced - return true
+        return true;
+     
+    }  
+    
+	/* Method for the use case:
+     * 6. Create a method that retrieves a list of all accounts and updates those accounts.
+     *      Create a custom field on the Account standard object called Size__c that will be a 
+     * 	picklist containing small/medium/large.
+     *      Create a method that retrieves a list of all accounts. 
+     *         - If an account has between 1-1000 employees then it is classified as small.
+     *         - If an account has between 1001-10000 employees it is classified as medium.
+     *         - If an account has more than 10000 employees it is classified as large.
+     *      Update the Size__c field on each account to reflect the amount of employees in the Account.
+    */
+    public static void updateAccountSize( ) {
+        //create a list to add all accounts too for a single update
+        List<Account> accounts = new List<Account>();
+        
+        //Obtain a list of all accounts of size and number employees and
+        //signify if company is a large, medium, or small sized company
+        //based on number of employees.
+        for(Account a: [SELECT Id, Size__c, NumberOfEmployees FROM Account]){
+        	Integer employees = a.NumberOfEmployees;
+            	if(employees > 0 && employees <= 1000){
+                	a.Size__c = 'Small';
+                	accounts.add(a);
+            	}
+            	else if(employees > 1000 && employees <= 10000){
+                	a.Size__c = 'Medium';
+                	accounts.add(a);
+            	}
+            	else if(employees > 10000){
+                	a.Size__c = 'Large';
+                	accounts.add(a);
+            	}   
+		}
+        
+        //update all accounts in the accounts list
+		update accounts;
+    }    
+    
+    /* Method for the use case:
+     * 7. Create a method that will find all leads that contain 'ca' in their fields. 
+     *     If a lead is located in California(CA), change their Lead Status field to 'Closed - Not 
+     * 		Converted' and their description should display the message, "We are no longer doing 
+     * 		business in California."
+    */
+    public static void updateCALeads( ) {
+        //create list to add all leads from query into
+		List<Lead> caLeads = new List<Lead>();
+        
+        //Obtain a list of all Leads in the state of california
+        //change status and description and add to list
+       	for(Lead l:[SELECT Id, Status, Description, state FROM Lead WHERE state='CA']){
+        	l.Status = 'Closed - Not Converted';
+            l.Description = 'We are no longer doing business in California.';
+            caLeads.add(l);
+        }
+        
+        //update all leads in the caLeads list
+        update caLeads;
+    }
+
+    /* Method for the use case:
+     * 8. Create a method that will find all Opportunities which have already passed their Close Date 
+     * and have a Stage field that is not 'Closed Won'. Since they have passed their Close Date and 
+     * they are not marked as 'Closed Won', they should be marked as 'Closed Lost'.
+    */
+    public static void closePastDueOpportunities( ) {
+        //Create a list to hold all opportunities from a query
+    	List<Opportunity> closedOpportunities = new List<Opportunity>();
+        
+        //Get all opportunities that have a stage name that is not closed won and is past the closed date
+        //update the stage name and add it to our list
+		for(Opportunity o:[SELECT Id, StageName, CloseDate FROM Opportunity WHERE StageName != 'Closed Won' AND CloseDate < TODAY]){
+        	o.StageName = 'Closed Lost';
+            closedOpportunities.add(o);
+        }
+        
+        //update our opportunity records with the list
+		update(closedOpportunities);
+	}
+}
