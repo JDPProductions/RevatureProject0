@@ -1,0 +1,92 @@
+/*
+ * Account Transformations Class
+ * Date: 2/5/2019
+ * Author: JD Passanisi
+ * This class contains the methods to alter a specific
+ * account's contents based on the following use cases:
+ * 
+ * Check if an account is overdrawn and change the status of the account accordingly.
+ * Create a new transaction relating to the account.
+ * Update the account based on all related transactions to show current balance
+*/
+
+public class AccountTranformations {
+    // Method to:
+    // Check if an account is overdrawn and change the status of the account accordingly.
+    // Takes in argument of string for finding account with account name
+    public static void statusChange(String accountName){
+        //Select account whose name matches passed in parameter
+        Account a = [SELECT name, AccountStatus__c, AccountBalanceEditable__c FROM Account WHERE Account.name = :accountName];
+        
+        //Check if account is closed, if not - check and update status of account balance.
+        if(a.AccountStatus__c != 'Closed'){
+            if(a.AccountBalanceEditable__c >= 0){
+                a.AccountStatus__c = 'Good Standing';
+            }
+            else{
+                a.AccountStatus__c = 'Overdrawn';
+            }
+        }
+        //Update respective account
+        update a;
+    }
+    
+    // Method to:
+    // Create a new transaction relating to the account.
+    // Takes in argument of string for finding account with account name to be combined with 
+    // transaction Type/Amount for creation of a new transaction
+    public static void newTransaction(String accountName, String transType, decimal transAmount){
+        //Select account whose name matches passed in parameter
+        Account a = [SELECT id, name FROM Account WHERE Account.name = :accountName];
+        
+        //Initialize new transaction fields
+        Transaction__c trans = new Transaction__c();
+        trans.AccountTransaction__c = a.Id;
+        trans.TransactionType__c = transType;
+        trans.TransactionAmount__c = transAmount;
+        
+        //Add new transaction to Salesforce Database
+        insert trans;
+    }
+    
+    // Method to:
+    // Update the account based on all related transactions to show current balance
+    // Takes in argument of string for finding account with account name for use in 
+    // cycling through all transactions of that account
+    public static void updateBalance(String accountName){
+        //Select account whose name matches passed in parameter
+        Account a = [SELECT id, name FROM Account WHERE Account.name = :accountName];
+        Id accID = a.Id;
+        
+        //Select transaction whose related acount matches account id
+        List<Transaction__c> trans = [SELECT AccountTransaction__c, TransactionAmount__c FROM Transaction__c WHERE AccountTransaction__c = :accId];
+        
+        //Initialize a total balance outside of the for loop scope
+        decimal total = 0;
+        
+        //Loop through all transactions and compile total
+        for(Transaction__c t: trans){
+            total = total + t.TransactionAmount__c; 
+        }
+        
+        //Update respective account
+        a.AccountBalanceEditable__c = total;
+        update a;
+    }
+}
+
+//EXAMPLES FOR FAST ACCESS:
+//AccountTranformations.statusChange('Hanbury Joint Account');
+//AccountTranformations.statusChange('The Doe Corporation');
+//AccountTranformations.statusChange('Willsworth Inc.');
+//AccountTranformations.statusChange('Smith Private Account');
+
+////AccountTranformations.updateBalance('Hanbury Joint Account', 'Deposit', 110);
+//AccountTranformations.updateBalance('The Doe Corporation', 'Withdraw', -110);
+//AccountTranformations.updateBalance('Willsworth Inc.', 'Deposit', 110 );
+//AccountTranformations.updateBalance('Smith Private Account', 'Withdraw', 110);
+
+//AccountTranformations.updateBalance('Hanbury Joint Account');
+//AccountTranformations.updateBalance('The Doe Corporation');
+//AccountTranformations.updateBalance('Willsworth Inc.');
+//AccountTranformations.updateBalance('Smith Private Account');
