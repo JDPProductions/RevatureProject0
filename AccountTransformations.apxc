@@ -14,7 +14,7 @@
  * is assuming the variables passed in are valid and correct.
 */
 
-public class AccountTranformations {
+public class AccountTransformations {
     // Method to:
     // Check if an account is overdrawn and change the status of the account accordingly.
     // Takes in argument of string for finding account with account name
@@ -80,17 +80,17 @@ public class AccountTranformations {
 }
 
 //EXAMPLES FOR FAST ACCESS:
-//AccountTranformations.statusChange('Hanbury Joint Account');
-//AccountTranformations.statusChange('The Doe Corporation');
-//AccountTranformations.statusChange('Willsworth Inc.');
-//AccountTranformations.statusChange('Smith Private Account');
+//AccountTransformations.statusChange('Hanbury Joint Account');
+//AccountTransformations.statusChange('The Doe Corporation');
+//AccountTransformations.statusChange('Willsworth Inc.');
+//AccountTransformations.statusChange('Smith Private Account');
 
-////AccountTranformations.updateBalance('Hanbury Joint Account', 'Deposit', 110);
-//AccountTranformations.updateBalance('The Doe Corporation', 'Withdraw', -110);
-//AccountTranformations.updateBalance('Willsworth Inc.', 'Deposit', 110 );
-//AccountTranformations.updateBalance('Smith Private Account', 'Withdraw', 110);
+////AccountTransformations.updateBalance('Hanbury Joint Account', 'Deposit', 110);
+//AccountTransformations.updateBalance('The Doe Corporation', 'Withdraw', -110);
+//AccountTransformations.updateBalance('Willsworth Inc.', 'Deposit', 110 );
+//AccountTransformations.updateBalance('Smith Private Account', 'Withdraw', 110);
 
-//AccountTranformations.updateBalance('Hanbury Joint Account');
-//AccountTranformations.updateBalance('The Doe Corporation');
-//AccountTranformations.updateBalance('Willsworth Inc.');
-//AccountTranformations.updateBalance('Smith Private Account');
+//AccountTransformations.updateBalance('Hanbury Joint Account');
+//AccountTransformations.updateBalance('The Doe Corporation');
+//AccountTransformations.updateBalance('Willsworth Inc.');
+//AccountTransformations.updateBalance('Smith Private Account');
